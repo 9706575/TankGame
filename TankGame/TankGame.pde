@@ -1,0 +1,38 @@
+// Dom Prim | 1 April 2026 | TankGame
+Tank t1;
+Obstacle o1;
+Obstacle o2;
+Obstacle o3;
+PImage bg;
+
+void setup() {
+  size(500, 500);
+  bg = loadImage("Jungle.png");
+  t1 = new Tank();
+  o1 = new Obstacle(400, 100, 100, 50, 5, 100);
+  o2 = new Obstacle(400, 300, 100, 50, 5, 100);
+  o3 = new Obstacle(100, 300, 100, 50, 5, 100);
+}
+
+void draw() {
+  background(bg);
+  t1.display();
+  o1.display();
+  o2.display();
+  o3.display();
+  o1.move();
+  o2.move();
+  o3.move();
+}
+
+void keyPressed() {
+  if (key == 'w') {
+    t1.move('w');
+  } else if (key == 's') {
+    t1.move('s');
+  } else if (key == 'a') {
+    t1.move('a');
+  } else if (key == 'd') {
+    t1.move('d');
+  }
+}
