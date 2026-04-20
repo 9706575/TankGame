@@ -25,4 +25,13 @@ class Projectile {
     x += vx;
     y += vy;
   }
+
+  boolean intersect(Obstacle o) {
+    float distance = dist(x, y, o.x, o.y);
+    if (distance < 50) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
