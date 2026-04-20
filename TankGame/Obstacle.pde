@@ -28,4 +28,12 @@ class Obstacle {
       x = 0;
     }
   }
+
+  boolean reachedEdge() {
+    if (x > width || x < -101 || y > height || y < 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
