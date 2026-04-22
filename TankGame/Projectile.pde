@@ -34,4 +34,8 @@ class Projectile {
       return false;
     }
   }
+
+  boolean reachedEdge() {
+    return (x > width || x < 0 || y > height || y < 0);
+  }
 }

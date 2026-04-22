@@ -25,16 +25,18 @@ void draw() {
   background(bg);
 
   if (objTimer.isFinished()) {
-    obstacles.add(new Obstacle(400, 100, 100, 50, int(random(1, 10)), 100));
+    float spawnX = random(50, width - 50);
+    float spawnY = random(50, height - 50);
+
+    obstacles.add(new Obstacle(spawnX, spawnY, 100, 50, int(random(1, 4)), 100));
     objTimer.start();
   }
-  
-  
-  
+
+
   // Render and detect collision
   for (int i = 0; i < projectiles.size(); i++) {
     Projectile p = projectiles.get(i);
-    for(int j = 0; j < obstacles.size(); j++) {
+    for (int j = 0; j < obstacles.size(); j++) {
       Obstacle o = obstacles.get(j);
       if (p.intersect(o)) {
         score = score + 100;
@@ -45,6 +47,11 @@ void draw() {
     }
     p.display();
     p.move();
+    if (p.reachedEdge()) {
+      projectiles.remove(i);
+      i--;
+      continue;
+    }
   }
   for (int i = 0; i < obstacles.size(); i++) {
     Obstacle o = obstacles.get(i);
