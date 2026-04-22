@@ -3,6 +3,7 @@ class Tank {
   float x, y, w, h, speed, health;
   PImage iTankW, iTankA, iTankD, iTankS;
   char idir;
+  int damageCooldown = 0;
 
   // Constructor
   Tank() {
@@ -11,7 +12,7 @@ class Tank {
     w = 100.0;
     h = 100.0;
     speed = 5.0;
-    health = 75.0;
+    health = 100;
     iTankS = loadImage("tankS.png");
     iTankA = loadImage("tankA.png");
     iTankD = loadImage("tankD.png");
@@ -29,6 +30,9 @@ class Tank {
       image(iTankD, x, y);
     } else if (idir == 's') {
       image(iTankS, x, y);
+    }
+    if (damageCooldown > 0) {
+      damageCooldown--;
     }
   }
 
@@ -49,5 +53,18 @@ class Tank {
   }
 
   void fire() {
+  }
+
+  boolean intersects(Obstacle o) {
+    float distance = dist(x, y, o.x, o.y);
+
+    return distance < (w/2 + o.w/2);
+  }
+
+  void takeDamage(int amount) {
+    if (damageCooldown <= 0) {
+      health -= amount;
+      damageCooldown = 20;
+    }
   }
 }

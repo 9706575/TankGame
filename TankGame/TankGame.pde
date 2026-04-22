@@ -27,42 +27,58 @@ void draw() {
   if (objTimer.isFinished()) {
     float spawnX = random(50, width - 50);
     float spawnY = random(50, height - 50);
-
     obstacles.add(new Obstacle(spawnX, spawnY, 100, 50, int(random(1, 4)), 100));
     objTimer.start();
   }
 
-
-  // Render and detect collision
   for (int i = 0; i < projectiles.size(); i++) {
     Projectile p = projectiles.get(i);
+
     for (int j = 0; j < obstacles.size(); j++) {
       Obstacle o = obstacles.get(j);
       if (p.intersect(o)) {
-        score = score + 100;
+        score += 100;
         projectiles.remove(i);
         obstacles.remove(j);
-        continue;
+        i--;
+        break;
       }
     }
+
     p.display();
     p.move();
+
     if (p.reachedEdge()) {
       projectiles.remove(i);
       i--;
-      continue;
     }
+    fill(255);
+    textSize(20);
+    text("Health: " + t1.health, 60, 30);
   }
+
   for (int i = 0; i < obstacles.size(); i++) {
     Obstacle o = obstacles.get(i);
+
     o.display();
     o.move();
-    if (o.reachedEdge()) {
-      obstacles.remove(i);
+
+    if (t1.intersects(o)) {
+      t1.takeDamage(10);
     }
   }
+
   t1.display();
   scorePanel();
+
+  if (t1.health <= 0) {
+    background(0);
+    fill(255, 0, 0);
+    textSize(40);
+    textAlign(CENTER);
+    text("GAME OVER", width/2, height/2);
+    noLoop();
+  }
 }
 
 void keyPressed() {
