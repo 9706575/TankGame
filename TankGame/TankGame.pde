@@ -2,12 +2,14 @@
 Tank t1;
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
 Obstacle o1;
 Obstacle o2;
 Obstacle o3;
 PImage bg;
 int score;
-Timer objTimer;
+Timer objTimer, puTimer;
+boolean upPressed, downPressed, leftPressed, rightPressed;
 
 void setup() {
   size(500, 500);
@@ -16,9 +18,8 @@ void setup() {
   t1 = new Tank();
   objTimer = new Timer(1000);
   objTimer.start();
-  //obstacles.add(new Obstacle(400, 100, 100, 50, 5, 100));
-  //obstacles.add(new Obstacle(400, 300, 100, 50, 5, 100));
-  //obstacles.add(new Obstacle(100, 300, 100, 50, 5, 100));
+  puTimer = new Timer(5000);
+  puTimer.start();
 }
 
 void draw() {
@@ -31,9 +32,15 @@ void draw() {
     objTimer.start();
   }
 
+  if (puTimer.isFinished()) {
+    powerups.add(new PowerUp());
+    puTimer.start();
+  }
+
   for (int i = 0; i < projectiles.size(); i++) {
     Projectile p = projectiles.get(i);
 
+    // projectile vs obstacle
     for (int j = 0; j < obstacles.size(); j++) {
       Obstacle o = obstacles.get(j);
       if (p.intersect(o)) {
@@ -52,14 +59,28 @@ void draw() {
       projectiles.remove(i);
       i--;
     }
-    fill(255);
-    textSize(20);
-    text("Health: " + t1.health, 60, 30);
+  }
+
+  for (int j = 0; j < powerups.size(); j++) {
+    PowerUp pu = powerups.get(j);
+    pu.display();
+    pu.move();
+
+    if (pu.reachedEdge()) {
+      powerups.remove(j);
+      j--;
+      continue;
+    }
+
+    if (pu.intersect(t1)) {
+      t1.health += 10;
+      powerups.remove(j);
+      j--;
+    }
   }
 
   for (int i = 0; i < obstacles.size(); i++) {
     Obstacle o = obstacles.get(i);
-
     o.display();
     o.move();
 
@@ -68,8 +89,18 @@ void draw() {
     }
   }
 
-  t1.display();
+  if (upPressed)    t1.y -= t1.speed;
+  if (downPressed)  t1.y += t1.speed;
+  if (leftPressed)  t1.x -= t1.speed;
+  if (rightPressed) t1.x += t1.speed;
+
+
+  t1.faceMouse();
+
   scorePanel();
+  fill(255);
+  textSize(20);
+  text("Health: " + t1.health, 60, 30);
 
   if (t1.health <= 0) {
     background(0);
@@ -81,17 +112,21 @@ void draw() {
   }
 }
 
+
 void keyPressed() {
-  if (key == 'w') {
-    t1.move('w');
-  } else if (key == 's') {
-    t1.move('s');
-  } else if (key == 'a') {
-    t1.move('a');
-  } else if (key == 'd') {
-    t1.move('d');
-  }
+  if (key == 'w') upPressed = true;
+  if (key == 's') downPressed = true;
+  if (key == 'a') leftPressed = true;
+  if (key == 'd') rightPressed = true;
 }
+
+void keyReleased() {
+  if (key == 'w') upPressed = false;
+  if (key == 's') downPressed = false;
+  if (key == 'a') leftPressed = false;
+  if (key == 'd') rightPressed = false;
+}
+
 
 void mousePressed() {
   float dx = mouseX - t1.x;

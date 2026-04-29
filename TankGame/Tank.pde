@@ -11,7 +11,7 @@ class Tank {
     y = 100.0;
     w = 100.0;
     h = 100.0;
-    speed = 5.0;
+    speed = 7.0;
     health = 100;
     iTankS = loadImage("tankS.png");
     iTankA = loadImage("tankA.png");
@@ -35,6 +35,24 @@ class Tank {
       damageCooldown--;
     }
   }
+  
+  void faceMouse() {
+  float angle = atan2(mouseY - y, mouseX - x);
+
+  // rotate tank
+  pushMatrix();
+  translate(x, y);
+  rotate(angle + HALF_PI);
+  imageMode(CENTER);
+  image(iTankW, 0, 0);
+  popMatrix();
+
+  // cooldown tick
+  if (damageCooldown > 0) {
+    damageCooldown--;
+  }
+}
+
 
   void move(char dir) {
     if (dir == 'w') {
